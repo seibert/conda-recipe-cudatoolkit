@@ -140,6 +140,10 @@ cu_8['osx'] = {'blob': 'cuda_8.0.61_mac-dmg',
 
 class Extractor(object):
 
+    libdir = {'linux': 'lib',
+              'osx': 'lib',
+              'windows': 'DLLs'}
+
     def __init__(self, version, ver_config, plt_config):
         self.cu_version = version
         self.md5_url = ver_config['md5_url']
@@ -156,8 +160,11 @@ class Extractor(object):
         self.config = {'version': version, **ver_config}
         self.prefix = os.environ['PREFIX']
         self.src_dir = os.environ['SRC_DIR']
-        self.output_dir = os.path.join(self.prefix, 'src')
-        os.mkdir(self.output_dir)
+        self.output_dir = os.path.join(self.prefix, self.libdir[getplatform()])
+        try:
+            os.mkdir(self.output_dir)
+        except FileExistsError:
+            pass
 
     def download_blobs(self):
         dl_url = urlparse.urljoin(self.base_url, self.installers_url_ext)
@@ -215,7 +222,7 @@ class Extractor(object):
                                     self.libdevice_lib_fmt)
 
         for fn in filepaths:
-            print('copying %s to %s', (fn, self.output_dir))
+            print('copying %s to %s' % (fn, self.output_dir))
             shutil.copy(fn, self.output_dir)
 
     def dump_config(self):
@@ -236,22 +243,28 @@ class WindowsExtractor(Extractor):
     def extract(self):
         runfile = self.cu_blob
         patches = self.patches
-        with tempdir() as tmpd:
-            check_call(['7za', 'x', '-o%s' %
-                        tmpd, os.path.join(self.src_dir, runfile)])
-            for p in patches:
-                check_call(['7za', 'x', '-aoa', '-o%s' %
-                            tmpd, os.path.join(self.src_dir, p)])
-            # fetch all the dlls into DLLs
-            store_name = 'DLLs'
-            store = os.path.join(tmpd, store_name)
-            os.mkdir(store)
-            for path, dirs, files in os.walk(tmpd):
-                if 'jre' not in path: # don't get jre dlls
-                    for filename in fnmatch.filter(files, "*.dll"):
-                        if not Path(os.path.join(store, filename)).is_file():
-                            shutil.copy(os.path.join(path, filename), store)
-            self.copy(tmpd, store)
+        try:
+            with tempdir() as tmpd:
+                check_call(['7za', 'x', '-o%s' %
+                            tmpd, os.path.join(self.src_dir, runfile)])
+                for p in patches:
+                    check_call(['7za', 'x', '-aoa', '-o%s' %
+                                tmpd, os.path.join(self.src_dir, p)])
+                # fetch all the dlls into DLLs
+                store_name = 'DLLs'
+                store = os.path.join(tmpd, store_name)
+                os.mkdir(store)
+                for path, dirs, files in os.walk(tmpd):
+                    if 'jre' not in path:  # don't get jre dlls
+                        for filename in fnmatch.filter(files, "*.dll"):
+                            if not Path(os.path.join(store, filename)).is_file():
+                                shutil.copy(os.path.join(path, filename), store)
+                self.copy(tmpd, store)
+        except PermissionError:
+            #TODO: fix this
+            # cuda 8 has files that refuse to delete, figure out perm changes
+            # needed and apply them above, tempdir context exit fails to rmtree
+            pass
 
 
 class LinuxExtractor(Extractor):
