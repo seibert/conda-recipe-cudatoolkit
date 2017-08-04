@@ -259,6 +259,9 @@ class WindowsExtractor(Extractor):
                         for filename in fnmatch.filter(files, "*.dll"):
                             if not Path(os.path.join(store, filename)).is_file():
                                 shutil.copy(os.path.join(path, filename), store)
+                        for filename in fnmatch.filter(files, "*.bc"):
+                            if not Path(os.path.join(store, filename)).is_file():
+                                shutil.copy(os.path.join(path, filename), store)
                 self.copy(tmpd, store)
         except PermissionError:
             #TODO: fix this
