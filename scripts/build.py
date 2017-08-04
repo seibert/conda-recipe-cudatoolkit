@@ -227,11 +227,7 @@ class WindowsExtractor(Extractor):
         self.copy_files(
             cuda_lib_dir=store,
             nvvm_lib_dir=store,
-            libdevice_lib_dir=os.path.join(
-                basepath,
-                'compiler',
-                'nvvm',
-                'libdevice'))
+            libdevice_lib_dir=store)
 
     def extract(self):
         runfile = self.cu_blob
