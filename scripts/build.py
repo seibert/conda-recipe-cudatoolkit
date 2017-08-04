@@ -46,7 +46,7 @@ for v in versions:
 ######################
 
 cu_75 = config['7.5']
-cu_75['base_url'] = "http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/"
+cu_75['base_url'] = "http://developer.download.nvidia.com/compute/cuda/7.5/Prod/"
 cu_75['md5_url'] = "http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/md5sum.txt"
 cu_75['cuda_libraries'] = [
     'cublas',
