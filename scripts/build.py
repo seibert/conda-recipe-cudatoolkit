@@ -157,6 +157,7 @@ class Extractor(object):
         self.prefix = os.environ['PREFIX']
         self.src_dir = os.environ['SRC_DIR']
         self.output_dir = os.path.join(self.prefix, 'src')
+        os.mkdir(self.output_dir)
 
     def download_blobs(self):
         dl_url = urlparse.urljoin(self.base_url, self.installers_url_ext)
@@ -214,7 +215,7 @@ class Extractor(object):
                                     self.libdevice_lib_fmt)
 
         for fn in filepaths:
-            print('copying', fn)
+            print('copying %s to %s', (fn, self.output_dir))
             shutil.copy(fn, self.output_dir)
 
     def dump_config(self):
