@@ -243,9 +243,10 @@ class WindowsExtractor(Extractor):
             store = os.path.join(tmpd, store_name)
             os.mkdir(store)
             for path, dirs, files in os.walk(tmpd):
-                for filename in fnmatch.filter(files, "*.dll"):
-                    if not Path(os.path.join(store, filename)).is_file():
-                        shutil.copy(os.path.join(path, filename), store)
+                if 'jre' not in path: # don't get jre dlls
+                    for filename in fnmatch.filter(files, "*.dll"):
+                        if not Path(os.path.join(store, filename)).is_file():
+                            shutil.copy(os.path.join(path, filename), store)
             self.copy(tmpd, store)
 
 
