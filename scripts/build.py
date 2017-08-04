@@ -106,22 +106,22 @@ cu_8['cuda_libraries'] = [
 ]
 cu_8['libdevice_versions'] = ['20.10', '30.10', '35.10', '50.10']
 
-cu_8['linux'] = {'blob': 'cuda_8.0.61_375.26_linux.run',
-                 'patches': ['cuda_8.0.61.2_linux.run'],
+cu_8['linux'] = {'blob': 'cuda_8.0.61_375.26_linux-run',
+                 'patches': ['cuda_8.0.61.2_linux-run'],
                  'cuda_lib_fmt': 'lib{0}.so.8.0',
                  'nvvm_lib_fmt': 'lib{0}.so.3.1.0',
                  'libdevice_lib_fmt': 'libdevice.compute_{0}.bc'
                  }
 
-cu_8['windows'] = {'blob': 'cuda_8.0.61_win10.exe',
-                   'patches': ['cuda_8.0.61.2_windows.exe'],
+cu_8['windows'] = {'blob': 'cuda_8.0.61_win10-exe',
+                   'patches': ['cuda_8.0.61.2_windows-exe'],
                    'cuda_lib_fmt': '{0}64_80.dll',
                    'nvvm_lib_fmt': '{0}64_31_0.dll',
                    'libdevice_lib_fmt': 'libdevice.compute_{0}.bc'
                    }
 
-cu_8['osx'] = {'blob': 'cuda_8.0.61_mac.dmg',
-               'patches': ['cuda_8.0.61.2_mac.dmg'],
+cu_8['osx'] = {'blob': 'cuda_8.0.61_mac-dmg',
+               'patches': ['cuda_8.0.61.2_mac-dmg'],
                'cuda_lib_fmt': 'lib{0}.8.0.dylib',
                'nvvm_lib_fmt': 'lib{0}.3.1.0.dylib',
                'libdevice_lib_fmt': 'libdevice.compute_{0}.bc'
