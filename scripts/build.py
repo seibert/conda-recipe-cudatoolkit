@@ -156,6 +156,7 @@ class Extractor(object):
         self.config = {'version': version, **ver_config}
         self.prefix = os.environ['PREFIX']
         self.src_dir = os.environ['SRC_DIR']
+        self.output_dir = os.path.join(self.prefix, 'src')
 
     def download_blobs(self):
         dl_url = urlparse.urljoin(self.base_url, self.installers_url_ext)
@@ -214,10 +215,10 @@ class Extractor(object):
 
         for fn in filepaths:
             print('copying', fn)
-            shutil.copy(fn, os.path.join(self.prefix, 'lib'))
+            shutil.copy(fn, self.output_dir)
 
     def dump_config(self):
-        dumpfile = os.path.join(self.prefix, 'lib', 'cudatoolkit_config.yaml')
+        dumpfile = os.path.join(self.output_dir, 'cudatoolkit_config.yaml')
         with open(dumpfile, 'w') as f:
             yaml.dump(self.config, f, default_flow_style=False)
 
