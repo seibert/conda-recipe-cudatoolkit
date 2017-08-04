@@ -89,7 +89,7 @@ cu_75['osx'] = {'blob': 'cuda_7.5.27_mac.dmg',
 ######################
 
 cu_8 = config['8.0']
-cu_8['base_url'] = "https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/"
+cu_8['base_url'] = "https://developer.nvidia.com/compute/cuda/8.0/Prod2/"
 cu_8['md5_url'] = "https://developer.nvidia.com/compute/cuda/8.0/Prod2/docs/sidebar/md5sum-txt"
 cu_8['cuda_libraries'] = [
     'cublas',
@@ -150,12 +150,14 @@ class Extractor(object):
         self.src_dir = os.environ['SRC_DIR']
 
     def download_blobs(self):
-        dl_url = urlparse.urljoin(self.base_url, self.cu_blob)
+        dl_url = urlparse.urljoin(self.base_url, 'local_installers/')
+        dl_url = urlparse.urljoin(dl_url, self.cu_blob)
         dl_path = os.path.join(self.src_dir, self.cu_blob)
         print("downloading %s to %s" % (dl_url, dl_path))
         download(dl_url, dl_path)
         for p in self.patches:
-            dl_url = urlparse.urljoin(self.base_url, p)
+            dl_url = urlparse.urljoin(self.base_url, 'patches/')
+            dl_url = urlparse.urljoin(dl_url, p)
             dl_path = os.path.join(self.src_dir, p)
             print("downloading %s to %s" % (dl_url, dl_path))
             download(dl_url, dl_path)
