@@ -1,17 +1,16 @@
 from __future__ import print_function
-import hashlib
 import fnmatch
 import os
 import sys
-import requests as rq
 import shutil
-from subprocess import check_call
-from tempfile import TemporaryDirectory as tempdir
-from pathlib import Path
-from contextlib import contextmanager
 import tarfile
 import urllib.parse as urlparse
 import yaml
+
+from contextlib import contextmanager
+from pathlib import Path
+from subprocess import check_call
+from tempfile import TemporaryDirectory as tempdir
 
 from conda.exports import download, hashsum_file
 
@@ -25,6 +24,9 @@ for v in versions:
 # config[cuda_version(s)...]
 #
 # and for each cuda_version the keys:
+# base_url the base url for all downloads
+# patch_url_ext the extra path needed to reach the patch directory from base_url
+# installers_url_ext the extra path needed to reach the local installers directory
 # md5_url the url for checksums
 # cuda_libraries the libraries to copy in
 # libdevice_versions the library device versions supported (.bc files)
@@ -238,8 +240,8 @@ class WindowsExtractor(Extractor):
             for p in patches:
                 check_call(['7za', 'x', '-aoa', '-o%s' %
                             tmpd, os.path.join(self.src_dir, p)])
-            # fetch all the dlls into lib64
-            store_name = 'lib64'
+            # fetch all the dlls into DLLs
+            store_name = 'DLLs'
             store = os.path.join(tmpd, store_name)
             os.mkdir(store)
             for path, dirs, files in os.walk(tmpd):
