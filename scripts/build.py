@@ -47,6 +47,8 @@ for v in versions:
 
 cu_75 = config['7.5']
 cu_75['base_url'] = "http://developer.download.nvidia.com/compute/cuda/7.5/Prod/"
+cu_75['patch_url_ext'] = ''
+cu_75['installers_url_ext'] = 'local_installers/'
 cu_75['md5_url'] = "http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/md5sum.txt"
 cu_75['cuda_libraries'] = [
     'cublas',
@@ -90,6 +92,8 @@ cu_75['osx'] = {'blob': 'cuda_7.5.27_mac.dmg',
 
 cu_8 = config['8.0']
 cu_8['base_url'] = "https://developer.nvidia.com/compute/cuda/8.0/Prod2/"
+cu_8['installers_url_ext'] = 'local_installers/'
+cu_8['patch_url_ext'] = 'patches/2/'
 cu_8['md5_url'] = "https://developer.nvidia.com/compute/cuda/8.0/Prod2/docs/sidebar/md5sum-txt"
 cu_8['cuda_libraries'] = [
     'cublas',
@@ -113,7 +117,7 @@ cu_8['linux'] = {'blob': 'cuda_8.0.61_375.26_linux-run',
                  'libdevice_lib_fmt': 'libdevice.compute_{0}.bc'
                  }
 
-cu_8['windows'] = {'blob': 'cuda_8.0.61_win10-exe',
+cu_8['windows'] = {'blob': 'cuda_8.0.61_windows-exe',
                    'patches': ['cuda_8.0.61.2_windows-exe'],
                    'cuda_lib_fmt': '{0}64_80.dll',
                    'nvvm_lib_fmt': '{0}64_31_0.dll',
@@ -138,6 +142,8 @@ class Extractor(object):
         self.cu_version = version
         self.md5_url = ver_config['md5_url']
         self.base_url = ver_config['base_url']
+        self.patch_url_ext = ver_config['patch_url_ext']
+        self.installers_url_ext = ver_config['installers_url_ext']
         self.cuda_libraries = ver_config['cuda_libraries']
         self.libdevice_versions = ver_config['libdevice_versions']
         self.cu_blob = plt_config['blob']
@@ -150,13 +156,13 @@ class Extractor(object):
         self.src_dir = os.environ['SRC_DIR']
 
     def download_blobs(self):
-        dl_url = urlparse.urljoin(self.base_url, 'local_installers/')
+        dl_url = urlparse.urljoin(self.base_url, self.installers_url_ext)
         dl_url = urlparse.urljoin(dl_url, self.cu_blob)
         dl_path = os.path.join(self.src_dir, self.cu_blob)
         print("downloading %s to %s" % (dl_url, dl_path))
         download(dl_url, dl_path)
         for p in self.patches:
-            dl_url = urlparse.urljoin(self.base_url, 'patches/')
+            dl_url = urlparse.urljoin(self.base_url, self.patch_url_ext)
             dl_url = urlparse.urljoin(dl_url, p)
             dl_path = os.path.join(self.src_dir, p)
             print("downloading %s to %s" % (dl_url, dl_path))
